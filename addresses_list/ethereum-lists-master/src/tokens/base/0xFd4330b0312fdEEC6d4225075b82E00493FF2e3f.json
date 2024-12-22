@@ -1,0 +1,27 @@
+{
+  "symbol": "SDEX",
+  "name": "SmarDex",
+  "type": "ERC20",
+  "address": "0xFd4330b0312fdEEC6d4225075b82E00493FF2e3f",
+  "ens_address": "",
+  "decimals": 18,
+  "website": "",
+  "logo": { "src": "", "width": "", "height": "", "ipfs_hash": "" },
+  "support": { "email": "", "url": "" },
+  "social": {
+    "blog": "",
+    "chat": "",
+    "discord": "",
+    "facebook": "",
+    "forum": "",
+    "github": "",
+    "gitter": "",
+    "instagram": "",
+    "linkedin": "",
+    "reddit": "",
+    "slack": "",
+    "telegram": "",
+    "twitter": "",
+    "youtube": ""
+  }
+}

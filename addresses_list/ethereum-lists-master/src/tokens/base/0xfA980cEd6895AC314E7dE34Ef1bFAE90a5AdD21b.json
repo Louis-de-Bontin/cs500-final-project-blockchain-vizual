@@ -1,0 +1,27 @@
+{
+  "symbol": "PRIME",
+  "name": "Echelon Prime",
+  "type": "ERC20",
+  "address": "0xfA980cEd6895AC314E7dE34Ef1bFAE90a5AdD21b",
+  "ens_address": "",
+  "decimals": 18,
+  "website": "",
+  "logo": { "src": "", "width": "", "height": "", "ipfs_hash": "" },
+  "support": { "email": "", "url": "" },
+  "social": {
+    "blog": "",
+    "chat": "",
+    "discord": "",
+    "facebook": "",
+    "forum": "",
+    "github": "",
+    "gitter": "",
+    "instagram": "",
+    "linkedin": "",
+    "reddit": "",
+    "slack": "",
+    "telegram": "",
+    "twitter": "",
+    "youtube": ""
+  }
+}

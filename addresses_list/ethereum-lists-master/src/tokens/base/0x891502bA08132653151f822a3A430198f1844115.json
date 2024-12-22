@@ -1,0 +1,27 @@
+{
+  "symbol": "BLUE",
+  "name": "Blue Guy",
+  "type": "ERC20",
+  "address": "0x891502bA08132653151f822a3A430198f1844115",
+  "ens_address": "",
+  "decimals": 18,
+  "website": "",
+  "logo": { "src": "", "width": "", "height": "", "ipfs_hash": "" },
+  "support": { "email": "", "url": "" },
+  "social": {
+    "blog": "",
+    "chat": "",
+    "discord": "",
+    "facebook": "",
+    "forum": "",
+    "github": "",
+    "gitter": "",
+    "instagram": "",
+    "linkedin": "",
+    "reddit": "",
+    "slack": "",
+    "telegram": "",
+    "twitter": "",
+    "youtube": ""
+  }
+}

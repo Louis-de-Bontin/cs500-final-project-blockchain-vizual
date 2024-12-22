@@ -1,0 +1,27 @@
+{
+  "symbol": "BOOMER",
+  "name": "Boomer",
+  "type": "ERC20",
+  "address": "0xcdE172dc5ffC46D228838446c57C1227e0B82049",
+  "ens_address": "",
+  "decimals": 18,
+  "website": "",
+  "logo": { "src": "", "width": "", "height": "", "ipfs_hash": "" },
+  "support": { "email": "", "url": "" },
+  "social": {
+    "blog": "",
+    "chat": "",
+    "discord": "",
+    "facebook": "",
+    "forum": "",
+    "github": "",
+    "gitter": "",
+    "instagram": "",
+    "linkedin": "",
+    "reddit": "",
+    "slack": "",
+    "telegram": "",
+    "twitter": "",
+    "youtube": ""
+  }
+}

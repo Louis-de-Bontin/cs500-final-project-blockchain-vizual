@@ -1,0 +1,27 @@
+{
+  "symbol": "VCNT",
+  "name": "ViciCoin",
+  "type": "ERC20",
+  "address": "0xdCf5130274753c8050aB061B1a1DCbf583f5bFd0",
+  "ens_address": "",
+  "decimals": 18,
+  "website": "",
+  "logo": { "src": "", "width": "", "height": "", "ipfs_hash": "" },
+  "support": { "email": "", "url": "" },
+  "social": {
+    "blog": "",
+    "chat": "",
+    "discord": "",
+    "facebook": "",
+    "forum": "",
+    "github": "",
+    "gitter": "",
+    "instagram": "",
+    "linkedin": "",
+    "reddit": "",
+    "slack": "",
+    "telegram": "",
+    "twitter": "",
+    "youtube": ""
+  }
+}

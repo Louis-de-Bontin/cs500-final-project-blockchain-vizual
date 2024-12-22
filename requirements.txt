@@ -1,0 +1,7 @@
+jupyterlab==4.3.3
+web3==7.6.0
+requests==2.32.3
+streamlit==1.41.1
+python-dotenv==1.0.1
+streamlit-flow-component==1.5.0
+pyvis==0.3.2
