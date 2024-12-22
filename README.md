@@ -1,5 +1,10 @@
 # EVM Visual
 
+## License
+
+This project is licensed under the GNU Lesser General Public License (LGPL) v3.0.
+See the [LICENSE](./LICENSE) file for details.
+
 ### Setup
 - Install *Graphviz* `sudo apt-get install graphviz graphviz-dev`. If you you problem installing it, follow the instructions [here](https://pygraphviz.github.io/documentation/stable/install.html).
 - Install Graph-Tools `sudo apt-get install python3-graph-tool`

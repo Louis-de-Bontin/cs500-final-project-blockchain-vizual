@@ -6,4 +6,6 @@
 env/
 .ipynb_checkpoints/
 __pycache__/
-chatGPT_idea.py
+chatGPT_idea.md
+.env
+test.py
