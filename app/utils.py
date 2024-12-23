@@ -1,33 +1,16 @@
 from dotenv import dotenv_values
 import csv
+from cs50 import SQL
+
+import requests
 
 config = dotenv_values(".env")
+db = SQL("sqlite:///addresses_list/addresses.db")
 
 
-def load_csv(file):
-    """ Load a csv with the format "address,alias,type,malicious"
-        Returns a dictionary with this format:
-        {
-            "address": {"alias": alias, "type": type, "malicious": malicious},
-            ...
-        }
+def resolve_url(network) -> str:
+    """ Resolve the Etherscan API URL based on the network.
     """
-    out = {}
-    with open(file, "r") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            out[row["address"].casefold()] = {
-                "alias": row["alias"],
-                "type": row["type"],
-                "malicious": row["malicious"],
-            }
-    return out
-
-
-KNOWN_ADDRESSES = load_csv("addresses_list/formated_list.csv")
-
-
-def resolve_url(network):
     print(f"Network: {network}")
     if network.lower() == "mainnet" or network.lower() == "ethereum":
         return "https://api.etherscan.io/api"
@@ -38,6 +21,8 @@ def resolve_url(network):
 
 
 def ptx(tx, address=None):
+    """ Print a transaction with the format:
+    """
     def direction():
         if address and tx['to'].lower() == address.lower():
             return "Received: "
@@ -64,10 +49,45 @@ def ptx(tx, address=None):
 
 
 def shrink_hexa(hexa):
+    """ Shrink a hexadecimal address to make it more readable.
+    """
     return f"{hexa[:4]}...{hexa[-3:]}"
 
 
+def fetch_address(address):
+    return db.execute(
+        """
+            SELECT address, alias, malicious, type, continue 
+            FROM addresses WHERE LOWER(address) = LOWER(?) LIMIT 1;
+        """,
+        address,
+    )
+
+
 def resolve_address(address):
-    if address.casefold() in KNOWN_ADDRESSES:
-        return KNOWN_ADDRESSES[address.casefold()]["alias"]
-    return shrink_hexa(address)
+    """ Resolve an address to its alias if it's known, otherwise shrink it.
+    """
+    if db_address := fetch_address(address):
+        return db_address[0]
+    return {
+        "address": address,
+        "alias": shrink_hexa(address),
+        "continue": False,
+    }
+
+
+def timestamp_to_block(timestamp, network="sepolia"):
+    """ Convert a timestamp to a block number.
+    """
+    url = resolve_url(network)
+    params = {
+        "module": "block",
+        "action": "getblocknobytime",
+        "timestamp": timestamp,
+        "closest": "before",
+        "apikey": config["ETHERSCAN_API"],
+    }
+    response = requests.get(url, params=params).json()
+    if response["message"] != "OK":
+        raise Exception(f"Error: {response['message']}")
+    return int(response["result"])

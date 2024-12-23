@@ -1,25 +1,30 @@
 import streamlit as st
-from app.graph import GraphBuilder
-from streamlit_flow import streamlit_flow
-from streamlit_flow.state import StreamlitFlowState
-from streamlit_flow.layouts import TreeLayout
-from app.utils import resolve_url
 
 
-graph = GraphBuilder()
+create_graph = st.Page(
+    "app/pages/create_graph.py",
+    title="Create Graph",
+    icon=":material/help:",
+)
+browse_graph = st.Page(
+    "app/pages/browse_graphs.py",
+    title="Browse Graphs",
+    icon=":material/bug_report:",
+)
+reference_address = st.Page(
+    "app/pages/reference_address.py",
+    title="Reference Address",
+    icon=":material/bug_report:",
+)
+pages = [create_graph, browse_graph, reference_address]
 
 st.title("EVM Vizualize : Ethereum Transaction Graph")
 
-graph.network = st.selectbox("Select the network", ["sepolia", "mainnet"])
-lib = st.selectbox("Select the library", ["streamlit", "pyvis"])
-graph.url = resolve_url(graph.network)
-graph.max_depth = st.slider("Select the maximum depth", 1, 10, 5)
-graph.source = st.text_input("Enter the source address").lower()
+page_dict = {
+    "Create Graph": create_graph,
+    "Browse Graph": browse_graph,
+    "Reference Address": reference_address,
+}
+pg = st.navigation(pages)
 
-if graph.source:
-    graph.build_graph(lib)
-
-    state = StreamlitFlowState(graph.nodes, graph.edges)
-
-    streamlit_flow('tree_layout', state, layout=TreeLayout(
-        direction='right'), fit_view=True)
+pg.run()

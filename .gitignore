@@ -9,3 +9,7 @@ __pycache__/
 chatGPT_idea.md
 .env
 test.py
+lib/
+pyvis_output/
+addresses.db
+addresses.csv
