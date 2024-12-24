@@ -13,3 +13,4 @@ lib/
 pyvis_output/
 addresses.db
 addresses.csv
+etherscan/

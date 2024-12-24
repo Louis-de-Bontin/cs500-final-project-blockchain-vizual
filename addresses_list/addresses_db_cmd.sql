@@ -1,4 +1,4 @@
-CREATE TABLE addresses (
+CREATE TABLE IF NOT EXISTS addresses (
     id INTEGER PRIMARY KEY AUTOINCREMENT,  -- Auto-incrementing primary key
     address CHAR(42) NOT NULL UNIQUE,   -- Required unique address field
     alias TEXT NOT NULL,                -- Required alias field

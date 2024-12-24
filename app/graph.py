@@ -29,16 +29,16 @@ class GraphBuilder:
         self.network = network
         self.url = resolve_url(self.network)
         self.lib = lib
-        self.nodes = []
-        self.edges = []
         self.pyvis_net = Network()
         self.max_depth = max_depth
         self.source = source
         self.last = last
         self.direction = direction
         self.visited_txs = set()
+
         self.datestart = datestart
         self.dateend = dateend
+
         self.eth_threashold = eth_threashold
 
         self.blockstart = timestamp_to_block(
@@ -126,15 +126,20 @@ class GraphBuilder:
                 continue
             if not int(tx['value']) > self.eth_threashold:
                 continue
-            ptx(tx, address)
 
             self.visited_txs.add(tx["hash"])
 
             receiver = tx["to"]
             if receiver != address.lower():  # Considering we are in send, TODO: Add receive
                 resolved_receiver = resolve_address(receiver)
-                self.add_nodes(receiver.casefold(), resolved_receiver["alias"])
-                self.add_edge(address.casefold(), receiver.casefold())
+                self.add_nodes(receiver.casefold(), resolved_receiver)
+                self.add_edge(
+                    address.casefold(),
+                    receiver.casefold(),
+                    **{
+                        "title": tx["hash"],
+                    },
+                )
                 if resolved_receiver["continue"]:  # Stops if address is known
                     self.populate_graph(
                         receiver,
@@ -143,58 +148,46 @@ class GraphBuilder:
                 else:
                     continue
 
-    def add_nodes(self, id, label, *args, **kwargs):
+    def add_nodes(self, id, address, *args, **kwargs):
         """ Add a node to the graph.
         """
-        if self.lib == "streamlit":
-            self.nodes.append(StreamlitFlowNode(
-                id,
-                (0, 0),
-                {'content': label},
-                'input',
-                'right',
-                draggable=False
-            ))
         if self.lib == "pyvis":
             self.pyvis_net.add_node(
                 id,
-                label=label,
-                color=kwargs.get("color", "blue"),
+                label=address["alias"],
+                title=address["address"],
+                color=kwargs.get("color", None),
+                borderWidth=kwargs.get("borderWidth", 1),
+                borderWidthSelected=kwargs.get("borderWidthSelected", 2),
+                size=kwargs.get("size", 15),
             )
 
     def add_edge(self, src, dest, *args, **kwargs):
         """ Add an edge to the graph.
         """
-        if self.lib == "streamlit":
-            self.edges.append(StreamlitFlowEdge(
-                f"{src}->{dest}",
+        if self.lib == "pyvis":
+            self.pyvis_net.add_edge(
                 src,
                 dest,
-                animated=False,
-                arrowStrikethrough=True,
-            ))
-            return
-        if self.lib == "pyvis":
-            self.pyvis_net.add_edge(src, dest, **kwargs)
-            return
+                arrows=kwargs.get(
+                    "arrows", {"to": {"enabled": True, "scaleFactor": 0.4}}),
+                color=kwargs.get("color", None),
+                **kwargs,
+            )
 
     def build_graph(self):
         """ Build the transaction graph for the given source address.
         """
         self.add_nodes(
             self.source.casefold(),
-            resolve_address(self.source)["alias"],
-            **{"color": "red"},
+            resolve_address(self.source),
+            **{"color": {"background": "red", "border": "black"}},
         )
         self.populate_graph(self.source, current_depth=0)
 
     def show_graph(self):
         """ Show the graph using the selected library.
         """
-        if self.lib == "streamlit":
-            state = StreamlitFlowState(self.nodes, self.edges)
-            streamlit_flow('tree_layout', state, layout=TreeLayout(
-                direction='right'), fit_view=True)
         if self.lib == "pyvis":
             # Get or create folder
             filepath = "./pyvis_output/{}/".format(
@@ -220,7 +213,5 @@ class GraphBuilder:
     def clear_graph(self):
         """ Clear the graph nodes and edges.
         """
-        self.nodes = []
-        self.edges = []
-        self.pyvis_net = Network()
+        self.pyvis_net = Network(directed=True)
         self.visited_txs = set()

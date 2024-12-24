@@ -2,19 +2,31 @@ import streamlit as st
 import streamlit.components.v1 as components
 
 from app.graph import GraphBuilder
-from app.utils import resolve_address
+from app.utils import resolve_address, date_ok
 
 
-st.title("EVM Vizualize : Ethereum Transaction Graph")
+st.header('Render A Graph')
 
-network = st.selectbox("Select the network", ["sepolia", "mainnet"])
-lib = st.selectbox("Select the library", ["pyvis"])
-max_depth = st.slider("Select the maximum depth", 1, 10, 5)
-eth_threashold = st.number_input("Ignore TX under x ETH", 0.0)
 source = st.text_input("Enter the source address").lower()
+network = st.selectbox("Select the network", ["sepolia", "mainnet"])
+
+st.write("Increasing the maximum depth increase rendering time exponentially.")
+max_depth = st.slider("Select the maximum depth", 1, 10, 5)
+
+st.write("Narrowing the search may save significant time.")
+eth_threashold = st.number_input("Ignore TX under x ETH", 0.0)
 
 datestart = st.date_input("Start date")
 dateend = st.date_input("End date")
+
+
+if date_res := date_ok(datestart, dateend):
+    if date_res == 1:
+        st.warning("The start date cannot be after the end date.")
+    elif date_res == 2:
+        st.warning("The end date cannot be after today.")
+    st.stop()
+
 
 if st.button("Vizualize"):
     st.write(f"""
@@ -24,7 +36,6 @@ if st.button("Vizualize"):
 
     graph = GraphBuilder(
         network=network,
-        lib=lib,
         max_depth=max_depth,
         source=source,
         datestart=datestart,

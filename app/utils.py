@@ -3,6 +3,7 @@ import csv
 from cs50 import SQL
 
 import requests
+from datetime import datetime
 
 config = dotenv_values(".env")
 db = SQL("sqlite:///addresses_list/addresses.db")
@@ -11,7 +12,6 @@ db = SQL("sqlite:///addresses_list/addresses.db")
 def resolve_url(network) -> str:
     """ Resolve the Etherscan API URL based on the network.
     """
-    print(f"Network: {network}")
     if network.lower() == "mainnet" or network.lower() == "ethereum":
         return "https://api.etherscan.io/api"
     if network.lower() == "sepolia":
@@ -72,7 +72,7 @@ def resolve_address(address):
     return {
         "address": address,
         "alias": shrink_hexa(address),
-        "continue": False,
+        "continue": True,
     }
 
 
@@ -91,3 +91,16 @@ def timestamp_to_block(timestamp, network="sepolia"):
     if response["message"] != "OK":
         raise Exception(f"Error: {response['message']}")
     return int(response["result"])
+
+
+def date_ok(datestart, dateend) -> int:
+    """ Return 1 if the start date is after the end date.
+        Return 2 if enddate is after today.
+        Return 0 otherwise.
+    """
+    if datestart and dateend:
+        if datestart > dateend:
+            return 1
+    if dateend and dateend > datetime.now().date():
+        return 2
+    return 0
