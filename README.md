@@ -147,7 +147,8 @@ This one took a while to pick. There are many available libraries to visualize g
 - Possibility to see the balance of an address from the graph.
 - Can input alias instead of address, with auto-completion.
 - Make the graph generation asynchronous.
-
+- The console logs way too much useless crap. I think it comes from a dependency installed by CS50 library. This should be addressed.
+- Make the notebooks actually usable for demonstration purpose.
 
 #### Useful
 ###### Quickly see a graph
@@ -165,6 +166,7 @@ In the `Render Graph` section, fill the form as follows:
 - When meeting an address with a crazy number of transactions, which slows significantly the graph generation, it is recommended to reference this address, un-checking `Continue` so the the graph generation stops when meeting this address.
 
 ### Project Structure
+```
 |final_project/
 ├── addresses_list/
 │   ├── addresses_db_cmd.sql
@@ -185,7 +187,7 @@ In the `Render Graph` section, fill the form as follows:
 ├── LICENSE
 ├── README.md
 ├── requirements.txt
-
+```
 ### Each File Explained
 
 ### Difficulties Met
