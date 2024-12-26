@@ -130,8 +130,8 @@ def csv_to_db(file=dir + "/addresses_formated.csv"):
             except ValueError:
                 print("Duplicate")
                 pass
-            if i % 100 == 0:
-                print(i)
+            if i % 1000 == 0:
+                print(f"Loaded {i} addresses...")
             i += 1
 
 

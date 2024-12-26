@@ -27402,7 +27402,7 @@ contractaddress,ContractName,Smart Contract,False,False
 0xf3b3cad094b89392fce5fafd40bc03b80f2bc624,Patron,token,False,False
 0xdb33d49b5a41a97d296b7242a96ebd8ac77b3bb8,CY Finance,token,False,False
 0x5e3002dff591c5e75bb9dedae268049742e6b13a,Tutor's Diary,token,False,False
-0x00000000219ab540356cbb839cbe05303d7705fa,Beacon Deposit Contract,other,False,False
+0x00000000219ab540356cbb839cbe05303d7705fa,Beacon Deposit Contract,smart contract,False,False
 0x40b38765696e3d5d8d9d834d8aad4bb6e418e489,Robinhood,exchange,False,False
 0x49048044d57e1c92a77f79988d21fa8faf74e97e,Base: Base Portal,smart contract,False,False
 0x8315177ab297ba92a06054ce80a67ed4dbd7ed3a,Arbitrum: Bridge,smart contract,False,False
@@ -27436,7 +27436,7 @@ contractaddress,ContractName,Smart Contract,False,False
 0xd6216fc19db775df9774a6e33526131da7d19a2c,KuCoin 6,exchange,False,False
 0x28140cb1ac771d4add91ee23788e50249c10263d,Bitfinex 16,exchange,False,False
 0xc56fefd1028b0534bfadcdb580d3519b5586246e,Bitfinex 11,exchange,False,False
-0xae0ee0a63a2ce6baeeffe56e7714fb4efe48d419,Starknet: StarkGate ETH Bridge,smart contract,False<false
+0xae0ee0a63a2ce6baeeffe56e7714fb4efe48d419,Starknet: StarkGate ETH Bridge,smart contract,False,False
 0x3727cfcbd85390bb11b3ff421878123adb866be8,Bitbank 2,exchange,False,False
 0x889edc2edab5f40e902b864ad4d7ade8e412f9b1,Lido: Withdrawal Queue,smart contract,False,False
 0x73af3bcf944a6559933396c1577b257e2054d935,Robinhood 6,exchange,False,False
