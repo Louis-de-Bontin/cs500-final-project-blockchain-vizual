@@ -21,7 +21,7 @@ def resolve_url(network) -> str:
 
 
 def ptx(tx, address=None):
-    """ Print a transaction with the format:
+    """ Print a transaction with a somewhat human readable format.
     """
     def direction():
         if address and tx['to'].lower() == address.lower():
@@ -55,6 +55,8 @@ def shrink_hexa(hexa):
 
 
 def fetch_address(address):
+    """ Fetch an address from the database.
+    """
     return db.execute(
         """
             SELECT address, alias, malicious, type, continue 

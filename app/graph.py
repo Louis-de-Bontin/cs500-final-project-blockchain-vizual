@@ -26,6 +26,8 @@ class GraphBuilder:
         dateend=None,
         eth_threashold=0.0,
     ):
+        """ Create the graph according to the user input.
+        """
         self.network = network
         self.url = resolve_url(self.network)
         self.lib = lib
@@ -41,11 +43,11 @@ class GraphBuilder:
 
         self.eth_threashold = eth_threashold
 
+        # Blockchains don't know about time, only blocks
         self.blockstart = timestamp_to_block(
             int(datetime.combine(self.datestart, datetime.min.time()).timestamp()),
             self.network,
         ) if datestart else 0
-
         self.blockend = timestamp_to_block(
             int(datetime.combine(self.dateend, datetime.min.time()).timestamp()),
             self.network,
@@ -56,14 +58,16 @@ class GraphBuilder:
         address,
         api_key=config["ETHERSCAN_API"],
     ):
-        """Fetch all transactions for a specific Ethereum address using the Etherscan API."""
+        """ Fetch all transactions for a specific Ethereum address using the 
+            Etherscan API.
+        """
         params = {
             "module": "account",
             "action": "txlist",
             "address": address,
             "startblock": self.blockstart,
             "endblock": self.blockend,
-            "sort": "asc",  # Sort by ascending order
+            "sort": "asc",
             "apikey": api_key
         }
 
@@ -77,6 +81,7 @@ class GraphBuilder:
 
     def filter_transactions(self, tx, sender, direction="send"):
         """ Filter transactions based on the direction and the source address.
+            Not used by the actual algorithm, but useful for debugging.
         """
         if (direction == "receive" and tx['to'].lower() == sender.lower()) \
                 or (direction == "send" and tx['from'].lower() == sender.lower()):
@@ -101,7 +106,7 @@ class GraphBuilder:
     def populate_graph(self, address, current_depth=0):
         """ Populate the graph with transactions starting from the given address.
             Recursively fetch transactions for the given address and add nodes 
-            and edges to the graph.
+            and edges to the graph. This is where the magic happens.
 
             Args:
                 address (str): The Ethereum address to start from.
@@ -149,7 +154,8 @@ class GraphBuilder:
                     continue
 
     def add_nodes(self, id, address, *args, **kwargs):
-        """ Add a node to the graph.
+        """ Add a node to the graph. Ad the IDs are unique,
+            a node will only be created if it doesn't already exist.
         """
         if self.lib == "pyvis":
             self.pyvis_net.add_node(
@@ -163,7 +169,7 @@ class GraphBuilder:
             )
 
     def add_edge(self, src, dest, *args, **kwargs):
-        """ Add an edge to the graph.
+        """ Add an edge to the graph. Pointing from the source to the destination.
         """
         if self.lib == "pyvis":
             self.pyvis_net.add_edge(
@@ -176,7 +182,8 @@ class GraphBuilder:
             )
 
     def build_graph(self):
-        """ Build the transaction graph for the given source address.
+        """ Create the source node, the calls the recursive method that
+            builds the transaction graph for the given source address.
         """
         self.add_nodes(
             self.source.casefold(),
@@ -186,7 +193,7 @@ class GraphBuilder:
         self.populate_graph(self.source, current_depth=0)
 
     def show_graph(self):
-        """ Show the graph using the selected library.
+        """ Save the graph in the system.
         """
         if self.lib == "pyvis":
             # Get or create folder

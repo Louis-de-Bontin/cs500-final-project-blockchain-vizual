@@ -128,7 +128,7 @@ def csv_to_db(file=dir + "/addresses_formated.csv"):
                     True if row["continue"] == "True" else False,
                 )
             except ValueError:
-                print("Duplicate")
+                # Duplicate...
                 pass
             if i % 1000 == 0:
                 print(f"Loaded {i} addresses...")
@@ -136,6 +136,8 @@ def csv_to_db(file=dir + "/addresses_formated.csv"):
 
 
 def all_to_csv():
+    """ Format all the data into a single csv file.
+    """
     output_csv = dir + "/addresses_formated_copy.csv"
     kaggle_dataset_to_csv(dir + "/addresses.csv", output_csv)
     ethereum_list_repo_to_csv_malicious(
