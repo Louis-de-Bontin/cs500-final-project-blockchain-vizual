@@ -1,4 +1,6 @@
-# EVM Visual
+# EVM Vizual
+### Video Demo
+[EVM Vizual](https://youtu.be/5hbfBxpjwCs)
 
 ### License
 
@@ -28,10 +30,11 @@ There are 2 ways to setup this project: Docker or locally. In both cases you wil
 #### Docker (Recommended)
 This section assume that you have Git and Docker installed on your machine.
 1. Clone the repository `git clone git@github.com:Louis-de-Bontin/cs500-final-project-blockchain-vizual.git`
-2. Create a `.env` file in the root of the project and add the following line `ETHERSCAN_API = "<your-api-key>"`
-3. Build the Docker image `docker build -t evm-visual .` 
-4. Run the Docker container `docker run evm-visual` (the first time you run this command, the 27,000 addresses from the .csv will be loaded in the database. This process may take a few minutes)
-5. Once the database is initialized and Streamlit is running, you should see the following:
+2. Go in the project directory `cd cs500-final-project-blockchain-vizual`
+3. Create a `.env` file in the root of the project and add the following line `ETHERSCAN_API = "<your-api-key>"`
+4. Build the Docker image `docker build -t evm-visual .` 
+5. Run the Docker container `docker run evm-visual` (the first time you run this command, the 27,000 addresses from the .csv will be loaded in the database. This process may take a few minutes)
+6. Once the database is initialized and Streamlit is running, you should see the following:
 ```
   You can now view your Streamlit app in your browser.
 
@@ -42,9 +45,23 @@ This section assume that you have Git and Docker installed on your machine.
 ```
 5. Open the URL labeled `Network URL` in your browser.
 
+#### Local
+Alternatively, you can run this project locally. You may need to adapt it to your OS. This worflow is tested on Ubuntu 24.04.
+1. Make sure git, python3, sqlite3 and pip3 are installed
+2. Clone the repository `git clone git@github.com:Louis-de-Bontin/cs500-final-project-blockchain-vizual.git`
+3. Go in the project directory `cd cs500-final-project-blockchain-vizual`
+4. Create a `.env` file in the root of the project and add the following line `ETHERSCAN_API = "<your-api-key>"`
+5. Create a virtual environment `python3 -m venv venv`
+6. Activate the virtual environment `source venv/bin/activate`
+7. Install the requirements `pip3 install -r requirements.txt`
+8. Create the database `sqlite3 ./addresses_list/addresses.db < ./addresses_list/addresses_db_cmd.sql`
+9. Populate the database `python3 ./init_db.py`
+10. Run the app `streamlit run __main__.py`
+
 ### How To Use
 In your browser, you should see the Streamlit app. Looking at the menu on the left, you can see the following options:
-###### Create Graph
+
+##### Create Graph
 This is the core of the project. This is where you can input an address, and see the hierarchy of transactions that link addresses together.
 - `Enter the source address` is where you input the address you want to investigate.
 - `Select the network`, select the blockchain that is relevant to your investigation. For now, only Ethereum and Sepolia (Ethereum testnet) are supported.
@@ -52,32 +69,32 @@ This is the core of the project. This is where you can input an address, and see
 - `Ignore TX under x ETH` is an optional parameter that allows you to ignore transactions that are below a certain value. This is useful to filter out dust swaps, signatures, etc. The unit is in ETH.
 - `Start date` will filter out all transactions that happened before this date. This is useful to narrow the search to a specific time-frame. This is optional. In the back-end, this is converted to a block number, as blockchain are not aware of time.
 - `End date` likewise, it will filter out all transactions that happened after this date.
-<br>
+<br><br>
 Once the form is completed, you can click `Visualize`, wait a bit a see the magic happen.
-The source (the starting address that you input in the first line of the form) is display in red in order to differentiate it from the others.The other addresses are displayed in blue.<br>
-If you hover a node or an edge, you can see the full address or transaction hash. Sadly the user can not click or copy them... An idea for future improvement.<br>
-The edges are directional, and point from the sender to the receiver.<br>
-__Important__: it is possible that address A sent money to address B. Then address B sent money to address A. In this case the last transaction that is met while building the graph will take on the first one. Assuming that the 2nd transaction is observed in 2nd by the graph (note that the transaction timestamp is irrelevant), this is the one that will dictate the direction of the edge. In this scenario, B will point to A in the graph. This is an other limitation that could be improved in the future.
+The source (the starting address that you input in the first line of the form) is display in red in order to differentiate it from the others.The other addresses are displayed in blue.<br><br>
+If you hover a node or an edge, you can see the full address or transaction hash. Sadly the user can not click or copy them... An idea for future improvement.<br><br>
+The edges are directional, and point from the sender to the receiver.<br><br>
+__Important__: it is possible that address A sent money to address B. Then address B sent money to address A. In this case the last transaction that is met while building the graph will take on the first one. Assuming that the 2nd transaction is observed in 2nd by the graph (note that the transaction timestamp is irrelevant), this is the one that will dictate the direction of the edge. In this scenario, B will point to A in the graph. This is an other limitation that could be improved in the future.<br><br>
 
-###### Browse Graphs
+###### Graph Generation
+Basically, here is how the algorithm works:
+0. The method responsible for the graph generation is `populate_graph`. It is a method called recursivelly Continue reading to understand how it works.
+1. Check if we reach the maximum depth of the graph. If yes, _returns_. This is one of the things that will stop the method from being recursively called.
+2. For a giver address, fetch all the transactions that this address sent or received, withing the time-frame and amount range defined by the user. If no address is found, _returns_.
+3. Iterate though all the transactions, and make a few checks for each of them. If it has already been visited, or if there is no sender or no receiver, or if the transaction doesn't meet the threadshold defined by the user, _continue_. That means that we ignore this transaction to go to the next one.
+4. The algorith will then make sure to remember this transaction to not visit it again. 
+5. If the the sender is the same at the address studied in the context of this branch, that means that the transaction is a _send_ transaction, which is of interest here. If that's the case, we continue, otherwise this is a _receive_ transaction, and we _continue_.
+6. Create a new node in the graph for the receiver of the transaction if it doesn't already exist.
+7. Create an edge pointing from the sender to the receiver of the transaction.
+8. If the receiving address is _not_ a dead-end, we call the method recursively with the receiving address as the source address, and the depth incremented by 1.
+
+
+##### Browse Graphs
 Simply allows you to navigate through all the graphs you generated. Sorted by source address.
 
-###### Reference Address
+##### Reference Address
 Here, you can add a new "Known Address" to the database. Check the section `Database > Structure` to understand each field. Here, you can reference address that may not be already known by the database, or that are simply relevant in your project.<br>
 The user doesn't have the possibility to update or delete addresses. This is a feature that could be added in the future.
-
-#### Local
-Alternatively, you can run this project locally. 
-1. Install git, python3 and pip3
-2. Install sqlite3
-3. Clone the repository `git clone git@github.com:Louis-de-Bontin/cs500-final-project-blockchain-vizual.git`
-4. Create a `.env` file in the root of the project and add the following line `ETHERSCAN_API = "<your-api-key>"`
-5. Create a virtual environment `python3 -m venv venv`
-6. Activate the virtual environment `source venv/bin/activate`
-7. Install the requirements `pip install -r requirements.txt`
-8. Create the database `sqlite3 ./addresses_list/addresses.db < ./addresses_list/addresses_db_cmd.sql`
-9. Populate the database `python3 ./init_db.py`
-10. Run the app `streamlit run app.py`
 
 ### Database
 
@@ -188,6 +205,65 @@ In the `Render Graph` section, fill the form as follows:
 ├── README.md
 ├── requirements.txt
 ```
+
 ### Each File Explained
+If you want to know more about the implementation of each method, you can check the dockstrings and comments of each one of them.
+
+###### addresses_db_cmd.sql
+This file contains the SQL commands to create the table in the database.
+
+###### addresses_format.py
+This file contains the script to format the addresses from the different sources into a common format.
+It is separated in different methodes. One per source. It also contains the method to populate the database.
+
+###### addresses_formatted.csv
+This file is the result of the formatting of the addresses from the different sources. This is where the 27,000+ known addresses are stored.
+
+###### addresses.db
+This is the database where the known addresses are stored. It is automatically created with docker, or manually while following the steps to install the project locally.
+
+###### browse_graphs.py
+This is the front-end of the page that allows the user to browse the graphs that he generated.
+
+###### create_graph.py
+This is the front-end of the page that allows the user to generate a graph.
+
+###### reference_address.py
+This is the front-end of the page that allows the user to reference a new address in the database.
+
+###### graph.py
+This file contains the graph generation algorithm and all the methods that are related to the graph.
+
+###### utils.py
+This is where useful methods that don't fit anywhere are stored.
+
+###### \_\_main\_\_.py
+This is the entry point of the project. It is where the Streamlit app is created.
+
+###### .env
+Created by the user during the installation process. This is where the environment variables are stored. It is used to store the Etherscan API key.
+
+###### Dockerfile
+This is the file that is used to build the Docker image.
+
+###### init_db.py
+This is the script that is used to populate the database with the known addresses.
+
+###### requirements.txt
+This file contains the list of the libraries that are used in the project.
+
 
 ### Difficulties Met
+##### Graph Generation Algorithm
+- How to make the graph actually readable and valuable. The main risk and difficulty being that at each layer of transaction, the difficulty of building the graph increases exponentially. Therefore, the tool provides a few possibilities to narrow the search as well as the possibility to reference known addresses that are dead-ends. With the user co-operation, it is therefore possible to make the graph generation manageable, maintaining value in what is displayed.
+- Recursivity is a difficult beast to wrap your mind around. It took me quite a while to make the algorithm do what I intended. But repetition, work, and chatGPT helped me to get there.
+
+##### Source Formatting
+- The sources are not in the same format. I had to create a script to format them in a common format. This was a tedious task, but it was necessary to have a clean, efficient and valuable database.
+
+##### Front-End
+- As stated above, I am alergic to front-end. This was actually a good exercise to do some, and reconciliate myself with it. Though I cheated a bit by using Streamlit.
+
+##### Graph Visualization Libraries
+- You can check the `Libraries > Pyvis` section to see the struggle I had to find the right library. This was a difficult choice, as I wanted to have a beautiful and interactive graph, but I also wanted to have a graph that is generated in a reasonable time. Pyvis was the right balance between the two.
+- Lesson learned: don't try to install Graph Tools on Ubuntu. It is a waste of time.
